@@ -16,24 +16,24 @@ train_data, test_data = split_data(data)
 # MSE = SUM (from i=1 to n) (actual_output - predicted_output) ** 2
 
 # get the columns
-y_train = train_data['MPG'].to_numpy()
-x_train = train_data['Weight'].to_numpy()
+y_train = train_data['MPG'].to_numpy().reshape(-1, 1)
+x_train = train_data['Weight'].to_numpy().reshape(-1, 1)
 
-y_test = test_data['MPG'].to_numpy()
-x_test = test_data['Weight'].to_numpy()
+y_test = test_data['MPG'].to_numpy().reshape(-1, 1)
+x_test = test_data['Weight'].to_numpy().reshape(-1, 1)
 
 # TODO: calculate closed-form solution
 obs_matrix = np.hstack((np.ones(x_train.shape), x_train))
 theta_best = np.linalg.inv(obs_matrix.T.dot(obs_matrix)).dot(obs_matrix.T).dot(y_train)
 
 # TODO: calculate error
-MSE = sum((y_train - (theta_best[0] + theta_best[1] * x_train)) ** 2) / len(x_train)
-print(y_test - (theta_best[0] + theta_best[1] * x_test))
-print(f'MSE: {MSE}, theta: {theta_best.flatten()}')
+MSE = sum((y_test - (theta_best[0] + theta_best[1] * x_test)) ** 2) / len(x_test)
+#print(y_test - (theta_best[0] + theta_best[1] * x_test))
+print("test: MSE: ",MSE, ", theta: ", theta_best.flatten())
 
 # plot the regression line
 x = np.linspace(min(x_test), max(x_test), 100)
-y = float(theta_best[0]) + float(theta_best[1]) * x
+y = float(theta_best[0][0]) + float(theta_best[1][0]) * x
 plt.plot(x, y)
 plt.scatter(x_test, y_test)
 plt.xlabel('Weight')
@@ -57,7 +57,7 @@ obs_matrix = np.hstack((np.ones(x_train.shape), x_train))
 # TODO: calculate theta using Batch Gradient Descent
 theta_best = np.random.rand(2, 1)
 i_range = 100000
-learning_rate = 0.001
+learning_rate = 0.0001
 m = x_train.shape[0]
 
 for i in range(int(i_range)):
@@ -65,12 +65,12 @@ for i in range(int(i_range)):
     theta_best = theta_best - learning_rate * gradient_MSE
 
 # TODO: calculate error
-MSE = sum((y_train - (theta_best[0] + theta_best[1])) ** 2) / len(x_train)
+MSE = sum(((theta_best[0] + theta_best[1] * x_test) - y_test) ** 2) / len(x_test)
 print(f'MSE: {MSE}, theta: {theta_best.flatten()}')
 
 # plot the regression line
 x = np.linspace(min(x_test), max(x_test), 100)
-y = float(theta_best[0]) + float(theta_best[1]) * x
+y = float(theta_best[0][0]) + float(theta_best[1][0]) * x
 plt.plot(x, y)
 plt.scatter(x_test, y_test)
 plt.xlabel('Weight')
