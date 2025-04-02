@@ -140,18 +140,17 @@ class MinMaxAgent :
     def minmax_decide(self, connect4):
         new_board = [row[:] for row in connect4.board]
         possible_moves = self.possible_drops(new_board, connect4.width)
-        args = []
+        v = float('-inf')
+        best_move = None
         d = 6
         for possible_move in possible_moves:
             n_row = 0
             while n_row + 1 < connect4.height and new_board[n_row + 1][possible_move] == '_':
                 n_row += 1
             new_board[n_row][possible_move] = self.my_token
-            args.append((self.minmax(new_board, 0, d-1, connect4), possible_move))
+            tmp = self.minmax(new_board, 0, d-1, connect4)
             new_board[n_row][possible_move] = '_'
-
-        max = args[0]
-        for arg in args:
-            if max[0] < arg[0]:
-                max = arg
-        return max[1]
+            if tmp > v:
+                v = tmp
+                best_move = possible_move
+        return best_move
