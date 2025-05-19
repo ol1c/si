@@ -31,16 +31,20 @@ def select_parents(items, knapsack_max_capacity, population, n_selection):
     return selected
 
 def crossover(parent1, parent2):
-    point = random.randint(1, len(parent1) - 1)
+    # point = random.randint(1, len(parent1) - 1)
+    point = len(parent1) // 2
     child1 = parent1[:point] + parent2[point:]
     child2 = parent2[:point] + parent1[point:]
     return child1, child2
 
 def mutate(individual, mutation_rate=0.1):
     new_individual = individual[:]
-    for i in range(len(new_individual)):
-        if random.random() < mutation_rate:
-            new_individual[i] = 1 - new_individual[i]
+    i = random.randint(0, len(new_individual) - 1)
+    new_individual[i] = 1 - new_individual[i]
+    # for i in range(len(new_individual)):
+    #     if random.random() < mutation_rate:
+    #         new_individual[i] = 1 - new_individual[i]
+
     return new_individual
 
 

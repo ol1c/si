@@ -14,6 +14,11 @@ class MinMaxAgent :
             raise AgentException('not my round')
         return self.minmax_decide(connect4)
 
+    def decide_no_h(self, connect4):
+        if connect4.who_moves != self.my_token:
+            raise AgentException('not my round')
+        return self.minmax_decide_no_h(connect4)
+
     def possible_drops(self, board, width):
         return [n_column for n_column in range(width) if board[0][n_column] == '_']
 
@@ -149,6 +154,50 @@ class MinMaxAgent :
                 n_row += 1
             new_board[n_row][possible_move] = self.my_token
             tmp = self.minmax(new_board, 0, d-1, connect4)
+            new_board[n_row][possible_move] = '_'
+            if tmp > v:
+                v = tmp
+                best_move = possible_move
+        return best_move
+    def minmax_no_h(self, board, x, d, connect4):
+        if d == 0:
+            return 0
+        end_game = self._check_game_over(board, connect4)
+        if end_game is not None:
+            return end_game
+
+        new_x = int(not x)
+        if x == 1:
+            token = self.my_token
+        else:
+            token = self.enemy_token
+        possible_moves = self.possible_drops(board, connect4.width)
+        args = []
+        for possible_move in possible_moves:
+            n_row = 0
+            while n_row + 1 < connect4.height and board[n_row + 1][possible_move] == '_':
+                n_row += 1
+            board[n_row][possible_move] = token
+            args.append(self.minmax(board, new_x, d-1, connect4))
+            board[n_row][possible_move] = '_'
+
+        if x == 1:
+            return max(args)
+        else:
+            return min(args)
+
+    def minmax_decide_no_h(self, connect4):
+        new_board = [row[:] for row in connect4.board]
+        possible_moves = self.possible_drops(new_board, connect4.width)
+        v = float('-inf')
+        best_move = None
+        d = 3
+        for possible_move in possible_moves:
+            n_row = 0
+            while n_row + 1 < connect4.height and new_board[n_row + 1][possible_move] == '_':
+                n_row += 1
+            new_board[n_row][possible_move] = self.my_token
+            tmp = self.minmax_no_h(new_board, 0, d-1, connect4)
             new_board[n_row][possible_move] = '_'
             if tmp > v:
                 v = tmp
