@@ -67,8 +67,7 @@ def training(model, x, y):
         # TODO update params
         with torch.no_grad():
             for param in model.parameters():
-                if param.grad is not None:
-                    param.copy_(param - learning_rate * param.grad)
+                param -= learning_rate * param.grad
         # track stats
         history.append(loss.log10().item())
         i_step += 1

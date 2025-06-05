@@ -125,5 +125,5 @@ if __name__ == '__main__':
 
     student_id = 197808         # Twój numer indeksu, np. 102247
 
-    # zad1_single_neuron(student_id)
+    zad1_single_neuron(student_id)
     zad2_two_layer_net(student_id)
